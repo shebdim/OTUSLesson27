@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Directories
+*debug*/
+*release*/
+.git/
+bak/
+.idea/
+html/
+latex/
+venv/
