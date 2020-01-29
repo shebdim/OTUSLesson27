@@ -53,7 +53,7 @@ std::size_t get_file_size(const std::string& filename) {
     return fs::file_size(fs::path(filename));
 }
 
-std::size_t findEol(std::ifstream& f, std::size_t start_pos) {
+std::size_t findEol(std::istream& f, std::size_t start_pos) {
     f.seekg(start_pos, ios_base::beg);
     char c;
     while (f.get(c)) {

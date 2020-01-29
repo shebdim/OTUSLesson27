@@ -9,7 +9,8 @@ endif()
 
 set(USE_TEST ON)
 
-# boost dependensies
+# dependensies
+find_package(Threads REQUIRED)
 if (USE_TEST)
     find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 endif()
@@ -20,10 +21,13 @@ set(SOURCE
         reducer.cpp reducer.h
         min_prefix.cpp min_prefix.h
         file_utils.cpp file_utils.h
+        iterator_range.h
 )
 set(EXE_SOURCE main.cpp ${SOURCE})
 if (USE_TEST)
-    set(TEST_SOURCE test_yamr_server.cpp ${SOURCE})
+    set(TEST_SOURCE
+            test_yamr_server.cpp
+            ${SOURCE})
 endif()
 
 # targets and libraries
@@ -67,6 +71,8 @@ if (USE_TEST)
 endif()
 
 # target linking
+target_link_libraries(${EXE_NAME} Threads::Threads)
+target_link_libraries(${TEST_NAME} Threads::Threads)
 if (USE_TEST)
     target_link_libraries(${TEST_NAME}
         ${Boost_LIBRARIES}
