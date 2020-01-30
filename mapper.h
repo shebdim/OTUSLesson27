@@ -11,10 +11,11 @@
 #include <thread>
 #include <future>
 
+namespace Yamr {
+
 using StrList = std::vector<std::string>;
 
 class Mapper {
-    static constexpr char SIZEOF_EOL = 1;
 
     struct SplitInfo {
         std::istream::pos_type start = 0;
@@ -24,9 +25,8 @@ class Mapper {
     friend struct TestMapper;
 
 public:
-    Mapper (std::string fname, std::size_t thread_count)
-        : fname_(std::move(fname)), thread_count_(thread_count)
-    {
+    Mapper(std::string fname, std::size_t thread_count)
+            : fname_(std::move(fname)), thread_count_(thread_count) {
         if (thread_count_ == 0) {
             throw std::invalid_argument("threads count can't be zero");
         }
@@ -37,7 +37,7 @@ public:
         split_info_ = split(fname_, thread_count_);
     }
 
-    template <typename Func>
+    template<typename Func>
     StrList run(Func func);
 
 private:
@@ -45,43 +45,55 @@ private:
     std::size_t thread_count_ = 0;
     std::vector<SplitInfo> split_info_;
 
-    static std::vector<SplitInfo> split(const std::string& fname, std::size_t thread_count);
-    static std::vector<SplitInfo> split(std::istream& file, std::size_t thread_count,
-            std::size_t stream_size);
-    template <typename Func>
-    static StrList thread_work(const std::string& fname,
-            const SplitInfo& split_info, Func func);
+    static std::vector<SplitInfo> split(const std::string &fname, std::size_t thread_count);
 
-    static StrList mergeLists(std::vector<StrList>& lists);
+    static std::vector<SplitInfo> split(std::istream &file, std::size_t thread_count,
+                                        std::size_t stream_size);
+
+    template<typename Func>
+    static StrList thread_work(const std::string &fname,
+                               const SplitInfo &split_info, Func func);
+
+    static StrList mergeLists(std::vector<StrList> &lists);
 };
 
 /*implementation*/
-template <typename Func>
+template<typename Func>
 StrList Mapper::run(Func func) {
     std::vector<std::future<StrList>> futures;
     futures.reserve(thread_count_);
     for (std::size_t i = 0; i < thread_count_; ++i) {
-        futures.emplace_back(std::async(thread_work<Func>, fname_, split_info_[i], func));
+        futures.emplace_back(
+            std::async(
+                thread_work<Func>,
+                std::ref(fname_),
+                std::ref(split_info_[i]),
+                func
+             )
+        );
     }
     // obtain results
     std::vector<StrList> res_list;
     res_list.reserve(thread_count_);
-    for (auto& task : futures) {
+    for (auto &task : futures) {
         res_list.push_back(task.get());
     }
     // merge results
     return mergeLists(res_list);
 }
 
-template <typename F>
-StrList Mapper::thread_work(const std::string& fname,
-                           const Mapper::SplitInfo& split_info, F func) {
+template<typename F>
+StrList Mapper::thread_work(const std::string &fname,
+                            const Mapper::SplitInfo &split_info, F func) {
     StrList res;
     std::ifstream f(fname);
     f.seekg(split_info.start);
     std::string s;
     while (std::getline(f, s)) {
-        res.push_back(func(s));
+        auto out = func(std::move(s));
+        for (auto &line : out) {
+            res.push_back(move(line));
+        }
         if (f.tellg() >= split_info.end) break;
     }
     std::sort(res.begin(), res.end());
@@ -89,12 +101,14 @@ StrList Mapper::thread_work(const std::string& fname,
 }
 
 struct TestMapper {
-    static std::vector<Mapper::SplitInfo> split(std::istream& file, std::size_t thread_count,
+    static std::vector<Mapper::SplitInfo> split(std::istream &file, std::size_t thread_count,
                                                 std::size_t stream_size) {
         return Mapper::split(file, thread_count, stream_size);
     }
 
-    static StrList mergeLists(std::vector<StrList>& lists) {
+    static StrList mergeLists(std::vector<StrList> &lists) {
         return Mapper::mergeLists(lists);
     }
 };
+
+}

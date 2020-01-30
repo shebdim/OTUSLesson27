@@ -11,6 +11,7 @@
 #include "min_prefix.h"
 
 using namespace std;
+using namespace Yamr;
 
 BOOST_AUTO_TEST_SUITE(mapper_test_suite)
 
@@ -80,6 +81,153 @@ BOOST_AUTO_TEST_SUITE(reducer_test_suite)
             vector<string> uniq;
             set_intersection(s1.begin(), s1.end(), s2.begin(), s2.end(), back_inserter(uniq));
             BOOST_CHECK(uniq.empty());
+        }
+    }
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(func_test_suite)
+
+    BOOST_AUTO_TEST_CASE(test_all_prefixes) {
+        {
+            string line{"abcdefg"};
+            auto res = all_prefixes(line);
+            BOOST_CHECK(res.size() == line.size());
+
+            vector<string> expected{"a", "ab", "abc", "abcd", "abcde", "abcdef",
+                                    "abcdefg"};
+            BOOST_CHECK(res == expected);
+        }
+        {
+            string line{""};
+            auto res = all_prefixes(line);
+            BOOST_CHECK(res.size() == line.size());
+
+            vector<string> expected{};
+            BOOST_CHECK(res == expected);
+        }
+        {
+            string line{"a"};
+            auto res = all_prefixes(line);
+            BOOST_CHECK(res.size() == line.size());
+
+            vector<string> expected{"a"};
+            BOOST_CHECK(res == expected);
+        }
+    }
+
+    BOOST_AUTO_TEST_CASE(test_calc_lines) {
+        {
+            vector<string> lines{
+                    "abc", "abc", "abc",
+                    "abs", "abs",
+                    "bca",
+                    "adb",
+                    "adba",
+            };
+            CalcLines func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "3 abc",
+                    "2 abs",
+                    "1 bca",
+                    "1 adb",
+                    "1 adba",
+            };
+            BOOST_CHECK(res == expected);
+        }
+        {
+            vector<string> lines{
+                    "abc", "abc", "abc",
+                    "abs", "abs",
+                    "bca",
+                    "adb", "adb",
+            };
+            CalcLines func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "3 abc",
+                    "2 abs",
+                    "1 bca",
+                    "2 adb",
+            };
+            BOOST_CHECK(res == expected);
+        }
+    }
+
+    BOOST_AUTO_TEST_CASE(test_check_duplicate) {
+        {
+            vector<string> lines{
+                    "abc", "abc", "abc",
+                    "abs", "abs",
+                    "bca",
+                    "adb",
+                    "adba",
+            };
+            CheckPrefixIsDuplicate func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "3 true",
+                    "4 false",
+            };
+            BOOST_CHECK(res == expected);
+        }
+        {
+            vector<string> lines{
+                    "a", "a", "a", "a",
+                    "ab", "ab", "ab",
+                    "abc",
+                    "abs", "abs",
+                    "abcd", "abcd",
+                    "abcf",
+                    "abcdef",
+            };
+            CheckPrefixIsDuplicate func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "1 true",
+                    "2 true",
+                    "3 true",
+                    "4 true",
+                    "6 false",
+            };
+            BOOST_CHECK(res == expected);
+        }
+        {
+            vector<string> lines{
+                    "a", "a", "a", "a",
+                    "ab", "ab", "ab",
+                    "abc",
+                    "abs", "abs",
+                    "abcd", "abcd",
+                    "abcf",
+                    "abcdef", "abcdef",
+            };
+            CheckPrefixIsDuplicate func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "1 true",
+                    "2 true",
+                    "3 true",
+                    "4 true",
+                    "6 true",
+            };
+            BOOST_CHECK(res == expected);
         }
     }
 
