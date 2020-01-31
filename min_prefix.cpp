@@ -1,5 +1,9 @@
 #include "min_prefix.h"
 
+#include <string_view>
+
+#include "str_utils.h"
+
 using namespace std;
 
 // mappers
@@ -13,6 +17,22 @@ std::vector<std::string> first_letter_task(const std::string& line) {
 
 std::vector<std::string> NLetter::operator()(const std::string& line) const {
     return {line.substr(0, min(letter_count_, line.size()))};
+}
+
+std::vector<std::string> get_first_word(std::string line) {
+    return {line.substr(0, line.find(' '))};
+}
+std::vector<std::string> get_all_words(std::string line) {
+    string_view data{line};
+    vector<string> res;
+    for (string_view word = read_token(data, " ");
+         !word.empty();
+         word = read_token(data, " ")
+        )
+    {
+        res.emplace_back(word);
+    }
+    return res;
 }
 
 std::vector<std::string> all_prefixes(std::string line) {

@@ -14,14 +14,16 @@ class Reducer {
     friend struct TestReducer;
 public:
     Reducer(StrList string_list, std::size_t thread_count)
-            : thread_count_(thread_count) {
+            : thread_count_(thread_count)
+    {
         if (thread_count_ == 0) {
             throw std::invalid_argument("threads count can't be zero");
         }
         splitted_lists_ = split(string_list, thread_count_);
     }
     Reducer(const std::string& filename, std::size_t thread_count)
-            : thread_count_(thread_count) {
+            : thread_count_(thread_count)
+    {
         if (thread_count_ == 0) {
             throw std::invalid_argument("threads count can't be zero");
         }
@@ -52,6 +54,7 @@ void Reducer::run(Func func, const std::string &fname_prefix) {
     for (std::size_t i = 0; i < thread_count_; ++i) {
         futures.emplace_back(
             std::async(
+                std::launch::async,
                 thread_work<Func>,
                 ref(splitted_lists_[i]),
                 func

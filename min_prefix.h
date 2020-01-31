@@ -22,6 +22,10 @@ struct NLetter {
     std::size_t letter_count_ = 1;
 };
 
+std::vector<std::string> get_first_word(std::string line);
+
+std::vector<std::string> get_all_words(std::string line);
+
 std::vector<std::string> all_prefixes(std::string line);
 
 

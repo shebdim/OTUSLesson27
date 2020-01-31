@@ -62,9 +62,11 @@ template<typename Func>
 StrList Mapper::run(Func func) {
     std::vector<std::future<StrList>> futures;
     futures.reserve(thread_count_);
+    // mapping
     for (std::size_t i = 0; i < thread_count_; ++i) {
         futures.emplace_back(
             std::async(
+                std::launch::async,
                 thread_work<Func>,
                 std::ref(fname_),
                 std::ref(split_info_[i]),
@@ -82,16 +84,15 @@ StrList Mapper::run(Func func) {
     return mergeLists(res_list);
 }
 
-template<typename F>
+template<typename Func>
 StrList Mapper::thread_work(const std::string &fname,
-                            const Mapper::SplitInfo &split_info, F func) {
+                            const Mapper::SplitInfo &split_info, Func func) {
     StrList res;
     std::ifstream f(fname);
     f.seekg(split_info.start);
-    std::string s;
-    while (std::getline(f, s)) {
-        auto out = func(std::move(s));
-        for (auto &line : out) {
+    for (std::string s; std::getline(f, s); ) {
+        auto out_list = func(std::move(s));
+        for (auto &line : out_list) {
             res.push_back(move(line));
         }
         if (f.tellg() >= split_info.end) break;

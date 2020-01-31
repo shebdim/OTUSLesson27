@@ -22,6 +22,7 @@ set(SOURCE
         min_prefix.cpp min_prefix.h
         file_utils.cpp file_utils.h
         iterator_range.h
+        str_utils.cpp str_utils.h
 )
 set(EXE_SOURCE main.cpp ${SOURCE})
 if (USE_TEST)

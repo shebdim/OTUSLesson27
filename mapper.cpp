@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <optional>
+//#include <cmath>
 
 #include "file_utils.h"
 #include "iterator_range.h"
@@ -22,12 +23,12 @@ std::vector<Mapper::SplitInfo> Mapper::split(const std::string &fname, std::size
 vector<Mapper::SplitInfo> Mapper::split(std::istream &file, std::size_t thread_count,
                                         std::size_t stream_size) {
     vector<SplitInfo> res(thread_count);
-    size_t chunk_size = stream_size / thread_count;
+    size_t chunk_size = max(stream_size / thread_count, size_t(1));
     for (size_t i = 1; i < thread_count; ++i) {
         res[i - 1].end = findEol(file, i * chunk_size);
         res[i].start = res[i - 1].end;
     }
-    res[thread_count - 1].end = stream_size;
+    res.back().end = stream_size;
     return res;
 }
 
@@ -59,10 +60,9 @@ StrList Mapper::mergeLists(vector<StrList> &lists) {
 
         // add it(min_str) to res and move forward min_it
         res.push_back(
-                //string(min_value)
-                move(
+            move(
                 *(iterators[*min_it_idx].begin())
-                )
+            )
         );
         ++(iterators[*min_it_idx].begin());
     }

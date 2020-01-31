@@ -18,16 +18,26 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    Yamr::Mapper m("test.in", 2u);
-    auto res = m.run(all_prefixes);
+    const string mapper_out_fname {"mapper_output.out"};
+    try {
+        const string input_file_name{argv[1]};
+        size_t mnum = stol(argv[2]);
+        size_t rnum = stol(argv[3]);
 
-    ofstream out("mapper_output.out");
-    for (const auto& line : res) {
-        out << line << '\n';
+        Yamr::Mapper m(input_file_name, mnum);
+        auto res = m.run(all_prefixes);
+
+        ofstream out(mapper_out_fname);
+        for (const auto &line : res) {
+            out << line << '\n';
+        }
+
+//        Yamr::Reducer r(move(res), rnum);
+        Yamr::Reducer r(mapper_out_fname, rnum);
+        r.run(CheckPrefixIsDuplicate(), "ouput_");
+        return 0;
+    } catch (const exception& e) {
+        cerr << e.what() << endl;
+        return 1;
     }
-
-    Yamr::Reducer r(move(res), 2u);
-//    Yamr::Reducer r("mapper_output.out", 2u);
-    r.run(CheckPrefixIsDuplicate(), "ouput_");
-	return 0;
 }
