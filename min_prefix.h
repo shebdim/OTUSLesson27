@@ -53,3 +53,16 @@ struct CheckPrefixIsDuplicate {
     std::string prev_;
     std::size_t counter_ = 0;
 };
+
+struct FindMaxPrefix {
+    void operator()(std::string line);
+
+    Yamr::StrList get_res();
+
+    std::string prev_;
+    std::size_t counter_ = 0;
+
+    std::size_t max_duplicate_size_ = 0;
+    std::size_t max_size_ = 0;
+};
+

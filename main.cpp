@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 
 //        Yamr::Reducer r(move(res), rnum);
         Yamr::Reducer r(mapper_out_fname, rnum);
-        r.run(CheckPrefixIsDuplicate(), "ouput_");
+        r.run(FindMaxPrefix(), "ouput_");
         return 0;
     } catch (const exception& e) {
         cerr << e.what() << endl;

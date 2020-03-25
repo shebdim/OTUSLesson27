@@ -106,3 +106,30 @@ Yamr::StrList CheckPrefixIsDuplicate::get_res() {
 }
 
 
+void FindMaxPrefix::operator()(std::string line) {
+    if (line == prev_) {
+        ++counter_;
+    } else {
+        if (counter_ != 1 && !prev_.empty()) {
+            if (prev_.size() > max_duplicate_size_) {
+                max_duplicate_size_ = prev_.size();
+            }
+        }
+        max_size_ = max(max_size_, prev_.size());
+        counter_ = 1;
+        prev_ = std::move(line);
+    }
+}
+
+Yamr::StrList FindMaxPrefix::get_res() {
+    if (counter_ != 1 && !prev_.empty()) {
+        if (prev_.size() > max_duplicate_size_) {
+            max_duplicate_size_ = prev_.size();
+        }
+    }
+    max_size_ = max(max_size_, prev_.size());
+    Yamr::StrList res{
+            std::to_string(min(max_duplicate_size_ + 1, max_size_))
+    };
+    return res;
+}
