@@ -6,22 +6,10 @@ branches:
   only:
   - master
 
-# install and set g++-8 and boost
-matrix:
-  include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
-            - libboost-all-dev
-      env:
-         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-before_install:
-    - eval "${MATRIX_EVAL}"
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 60
+addons:
+  apt:
+    packages:
+    - libboost-all-dev
 
 # run
 script:
