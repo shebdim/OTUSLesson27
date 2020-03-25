@@ -46,10 +46,10 @@ endif()
 
 # compiler options
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  set(CMP_OPTIONS "-Wall;-Wextra;-Wshadow;-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Wunused;-Woverloaded-virtual;-Wconversion;-Wsign-conversion") #;-Wduplicated-cond
+  set(CMP_OPTIONS "-Wall;-Wextra;-Wshadow;-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Wunused;-Woverloaded-virtual;-Wconversion;-Wsign-conversion;-Wduplicated-cond")
   if(CMAKE_BUILD_TYPE MATCHES Debug)
       #set(CMP_OPTIONS ${CMP_OPTIONS}";-D_GLIBCXX_DEBUG;-D_GLIBCXX_DEBUG_PEDANTIC")
-      set(CMP_OPTIONS ${CMP_OPTIONS}";-fsanitize=address")
+      #set(CMP_OPTIONS ${CMP_OPTIONS}";-fsanitize=address")
       message("debug")
   endif()
 else()
