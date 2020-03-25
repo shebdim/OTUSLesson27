@@ -12,6 +12,9 @@ set(USE_TEST ON)
 # dependensies
 find_package(Threads REQUIRED)
 if (USE_TEST)
+    if (WIN32)
+        set(Boost_COMPILER mgw91)
+    endif()
     find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 endif()
 
