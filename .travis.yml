@@ -1,15 +1,26 @@
-dist: bionic
+dist: xenial
 language: cpp
-#compiler: clang
+compiler: clang
 # safelist
 branches:
   only:
   - master
 
-addons:
-  apt:
-    packages:
-    - libboost-all-dev
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-9
+            - libboost-all-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+before_install:
+    - eval "${MATRIX_EVAL}"
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 60
 
 # run
 script:
