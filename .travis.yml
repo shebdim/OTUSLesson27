@@ -28,7 +28,7 @@ script:
 - cmake .
 - cmake --build .
 - cmake --build . --target test
-- cmake --build . --target package
+- cmake --build . -DCMAKE_BUILD_TYPE=Debug --target package
 
 deploy:
  - provider: script
