@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
         for (const auto &line : res) {
             out << line << '\n';
         }
+        out.close();
 
 //        Yamr::Reducer r(move(res), rnum);
         Yamr::Reducer r(mapper_out_fname, rnum);
