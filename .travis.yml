@@ -1,6 +1,6 @@
 dist: bionic
 language: cpp
-compiler: clang
+#compiler: clang
 # safelist
 branches:
   only:
