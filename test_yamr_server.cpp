@@ -231,4 +231,65 @@ BOOST_AUTO_TEST_SUITE(func_test_suite)
         }
     }
 
+    BOOST_AUTO_TEST_CASE(test_find_max_prefix) {
+        {
+            vector<string> lines{
+                    "abc", "abc", "abc",
+                    "abs", "abs",
+                    "bca",
+                    "adb",
+                    "adba",
+            };
+            FindMaxPrefix func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "4",
+            };
+            BOOST_CHECK(res == expected);
+        }
+        {
+            vector<string> lines{
+                    "a", "a", "a", "a",
+                    "ab", "ab", "ab",
+                    "abc",
+                    "abs", "abs",
+                    "abcd", "abcd",
+                    "abcf",
+                    "abcdef",
+            };
+            FindMaxPrefix func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "5",
+            };
+            BOOST_CHECK(res == expected);
+        }
+        {
+            vector<string> lines{
+                    "a", "a", "a", "a",
+                    "ab", "ab", "ab",
+                    "abc",
+                    "abs", "abs",
+                    "abcd", "abcd",
+                    "abcf",
+                    "abcdef", "abcdef",
+            };
+            FindMaxPrefix func;
+            for (const auto &line : lines) {
+                func(line);
+            }
+            auto res = func.get_res();
+            vector<string> expected{
+                    "6",
+            };
+            BOOST_CHECK(res == expected);
+        }
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
