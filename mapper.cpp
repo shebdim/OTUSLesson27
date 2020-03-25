@@ -70,4 +70,19 @@ StrList Mapper::mergeLists(vector<StrList> &lists) {
     return res;
 }
 
+void Mapper::saveResults(const std::vector<StrList> &lists) {
+    const std::string out_fname_prefix = "mapper_";
+    const std::string out_fname_suffix = ".out";
+    size_t idx = 0;
+    for (const auto& list : lists) {
+        std::string filename = out_fname_prefix;
+        filename += to_string(idx++);
+        filename += out_fname_suffix;
+        ofstream out(filename);
+        for (const auto& line : list) {
+            out << line << '\n';
+        }
+    }
+}
+
 }

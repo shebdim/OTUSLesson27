@@ -55,6 +55,8 @@ private:
                                const SplitInfo &split_info, Func func);
 
     static StrList mergeLists(std::vector<StrList> &lists);
+
+    static void saveResults(const std::vector<StrList> &lists);
 };
 
 /*implementation*/
@@ -80,6 +82,9 @@ StrList Mapper::run(Func func) {
     for (auto &task : futures) {
         res_list.push_back(task.get());
     }
+
+    // save results to disk
+    saveResults(res_list);
     // merge results
     return mergeLists(res_list);
 }

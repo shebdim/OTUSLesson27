@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    const string mapper_out_fname {"mapper_output.out"};
+    const string mapper_out_fname {"mapper_merged.out"};
     try {
         const string input_file_name{argv[1]};
         size_t mnum = stol(argv[2]);
